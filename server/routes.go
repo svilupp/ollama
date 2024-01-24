@@ -438,7 +438,7 @@ func PullModelHandler(c *gin.Context) {
 		ctx, cancel := context.WithCancel(c.Request.Context())
 		defer cancel()
 
-		if err := PullModel(ctx, model, regOpts, fn); err != nil {
+		if err := PullModel(ctx, model, req.CurrentDigest, regOpts, fn); err != nil {
 			ch <- gin.H{"error": err.Error()}
 		}
 	}()
@@ -659,6 +659,7 @@ func GetModelInfo(req api.ShowRequest) (*api.ShowResponse, error) {
 	}
 
 	modelDetails := api.ModelDetails{
+		Digest:            "sha256:" + model.Digest,
 		Format:            model.Config.ModelFormat,
 		Family:            model.Config.ModelFamily,
 		Families:          model.Config.ModelFamilies,
