@@ -61,6 +61,10 @@ apply_patches() {
     if ! grep ollama ${LLAMACPP_DIR}/examples/server/CMakeLists.txt; then
         echo 'include (../../../ext_server/CMakeLists.txt) # ollama' >>${LLAMACPP_DIR}/examples/server/CMakeLists.txt
     fi
+
+    # apply temporary patches until fix is upstream
+    (cd ${LLAMACPP_DIR} && git apply ../patches/server-kv-rm.diff)
+
     # Avoid duplicate main symbols when we link into the cgo binary
     sed -e 's/int main(/int __main(/g' <${LLAMACPP_DIR}/examples/server/server.cpp >${LLAMACPP_DIR}/examples/server/server.cpp.tmp &&
         mv ${LLAMACPP_DIR}/examples/server/server.cpp.tmp ${LLAMACPP_DIR}/examples/server/server.cpp
